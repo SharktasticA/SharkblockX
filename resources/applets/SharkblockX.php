@@ -1,12 +1,51 @@
 <?php
 
 /*
-    SharkblockX classes file.
+    SharkblockX Globals
     SharktasticA 2021
 */
 
 /**
- * Enumation of SbXBlock derivatives that exist within the system.
+ * The server's document root.
+ */
+$SRV_ROOT = $_SERVER["DOCUMENT_ROOT"]."/";
+
+/**
+ * The directory containing this application's CSS files.
+ */
+$CSS_ROOT = "resources/styles/";
+
+/**
+ * The directory containing this application's JavaScript
+ * files.
+ */
+$JS_ROOT = "resources/scripts/";
+
+/**
+ * The placeholder image filepath used when a non-existent
+ * image is found.
+ */
+$NO_IMG_PLACEHOLDER = "resources/images/misc/null.png";
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    Enumerations to use throughout SharkblockX.
+    SharktasticA 2021
+*/
+
+/**
+ * Enumeration of possible HTML document types to select.
+ */
+abstract class DocType
+{
+    const HTML401Strict = 0;
+    const HTML401Transitional = 1;
+    const HTML5 = 2;
+}
+
+/**
+ * Enumeration of SbXBlock derivatives that exist within the system.
  */
 abstract class SbXBlockType
 {
@@ -27,7 +66,7 @@ abstract class SbXBlockType
 /**
  * Enumeration of errors that can be thrown within the system.
  */
-abstract class SbXErrorTypes
+abstract class SbXErrorType
 {
     /**
      * Flags that an array is being accessed with an index value
@@ -57,6 +96,301 @@ abstract class SbXAlign
     const Right = 1;
     const Center = 2;
 }
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    Helper function functions for use within SharkblockX and in general.
+    SharktasticA 2021
+*/
+
+/**
+ * Adds an attribute to a given HTML attribute options
+ * array, handling if an attribute has already been specified.
+ * @param array $attribs    The attributes array itself (passed by reference)
+ * @param string $index     Array key to store the attribute at (eg, an element attribute name)
+ * @param string $val       The attribute's value
+ * @param bool $add_space   Flags if a space should be used in concating existing attribute with new val
+ * @return string
+ */
+function add_attrib(&$attribs, $index, $val, $add_space = true)
+{
+    if (!is_array($attribs)) return "";
+
+    if (!array_key_exists($index, $attribs)) $attribs[$index] = $val;
+    else
+    {
+        if ($add_space) $attribs[$index] .= " ".$val;
+        else $attribs[$index] .= $val;
+    }
+
+    return $attribs;
+}
+
+/**
+ * Checks if a string contains a word.
+ * @param string $str   String to check
+ * @param string $word  Substring to find
+ * @return bool
+ */
+function contains_word($str, $word)
+{
+    if (strpos($str, $word) !== false) return true;
+    else return false;
+}
+
+/**
+ * Converts an HTML attribute options array into
+ * a string that can be echoed inside an element declaration.
+ * @param array $attribs    The attributes array itself
+ * @param bool $sort        Flags if attributes array should be ksorted
+ * @return string
+ */
+function parse_attribs($attribs, $sort = true)
+{
+    if (!is_array($attribs)) return "";
+
+    if ($sort) ksort($attribs);
+
+    $attribs_str = " ";
+    $attrib_names = array_keys($attribs);
+
+    for ($i = 0; $i < count($attribs); $i++)
+    {
+        if ($attribs[$attrib_names[$i]] != "")
+        {
+            if (strpos($attribs[$attrib_names[$i]], '"') !== false)
+                $attribs_str .= $attrib_names[$i]."='".$attribs[$attrib_names[$i]]."' ";
+            else
+                $attribs_str .= $attrib_names[$i].'="'.$attribs[$attrib_names[$i]].'" ';
+        }
+    }
+
+    return truncate_str($attribs_str);
+}
+
+/**
+ * Checks if image exists within this site's files.
+ * @param string $src   Image filepath to validate
+ * @return string
+ */
+function validate_img($src)
+{
+    if (!file_exists($GLOBALS["SRV_ROOT"].$src)) return $GLOBALS["NO_IMG_PLACEHOLDER"];
+    else return $src;
+}
+
+/**
+ * Truncates a string by the desired amount (defaulted
+ * to one character).
+ * @param string $str   String to truncate
+ * @param int $count    Amount of characters to remove
+ * @return string
+ */
+function truncate_str($str, $count = 1)
+{
+    return substr_replace($str,"", -1 * abs($count));
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    SharkblockX simple HTML wraps.
+    SharktasticA 2021
+*/
+
+/**
+ * Outputs markup for an anchor/hyperlink element.
+ * @param string $str       String to go inside this element
+ * @param string $uri       Hyperlink or page anchor
+ * @param array $attribs   Custom HTML attribute options array
+ * @return string
+ */
+function a($str, $uri = "#", $attribs = array())
+{
+    add_attrib($attribs, "href", $uri);
+
+    return "<a".parse_attribs($attribs).">".$str."</a>";
+}
+
+/**
+ * Outputs markup for a line break element.
+ * @return string
+ */
+function br()
+{
+    return "<br />"; 
+}
+
+/**
+ * Outputs markup for an inline code element.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function code($str)
+{
+    return "<code>".$str."</code>";
+}
+
+/**
+ * Outputs markup for a division element.
+ * @param string $contents  String to go inside this element
+ * @param bool $no_snippet  Flags if div should be wrapped in a data-nosnippet span
+ * @param array $attribs   Custom HTML attribute options array
+ * @return string
+ */
+function div($contents, $no_snippet = false, $attribs = array())
+{
+    if ($nosnippet) return "<span data-nosnippet><div".parse_attribs($attribs).">".$contents."</div></span>";
+    else return "<div".parse_attribs($attribs).">".$contents."</div>";
+}
+
+/**
+ * Outputs markup for an emphasised (italic) text element.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function em($str)
+{
+    return "<em>".$str."</em>";
+}
+
+/**
+ * Outputs markup for an image element.
+ * @param string $src               Image filepath or URI
+ * @param array $img_attribs       Custom HTML attribute options array for the image itself
+ * @param array $container_attribs Custom HTML attribute options array for the div container
+ * @return string
+ */
+function img($src, $img_attribs = array(), $container_attribs = array())
+{
+    add_attrib($img_attribs, "src", $src);
+
+    return div("<img".parse_attribs($img_attribs)." /></div>", $container_attribs);
+}
+
+/**
+ * Outputs markup for an OpenSearch feature such as a search engine
+ * spec for browsers to find.
+ * @param string $title     Title for OpenSearch spec
+ * @param string $href      Hyperlink for OpenSearch spec
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function opensearch_desc($title, $href, $attribs = array())
+{
+    add_attrib($attribs, "title", $title);
+    add_attrib($attribs, "href", $href);
+    add_attrib($attribs, "data-react-helmet", "true");
+    add_attrib($attribs, "rel", "search");
+    add_attrib($attribs, "type", "application/opensearchdescription+xml");
+
+    return "<link".parse_attribs($attribs).">";
+}
+
+/**
+ * Outputs markup for text with escaped quotes added around it.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function quotes($str)
+{
+    return "\"".$str."\"";
+}
+
+/**
+ * Outputs markup for a span element.
+ * @param string $contents  String to go inside this element
+ * @param array $attribs   Custom HTML attribute options array
+ * @return string
+ */
+function span($contents, $attribs = array())
+{
+    return "<span".parse_attribs($attribs).">".$contents."</span>";
+}
+
+/**
+ * Outputs markup for a strong (bold) text element.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function strong($str)
+{
+    return "<strong>".$str."</strong>";
+}
+
+/**
+ * Outputs markup for a subscript element.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function sub($str)
+{
+    return "<sub>".$str."</sub>";
+}
+
+/**
+ * Outputs markup for a superscript element.
+ * @param string $str   String to go inside this element
+ * @return string
+ */
+function sup($str)
+{
+    return "<sup>".$str."</sup>";
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    SharkblockX complex HTML wraps.
+    SharktasticA 2021
+*/
+
+/**
+ * Declares the opening document tags (DOCTYPE and html tags).
+ * @param string $contents  String to go inside this element
+ * @param DocType $doctype  Doctype version to use
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function document($contents, $doctype = DocType::HTML5, $attribs = array())
+{
+    $doct = "<!DOCTYPE HTML>";
+    if ($doctype == DocType::HTML401Strict) $doct = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
+    else if ($doctype == DocType::HTML401Transitional) $doct = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
+
+    return $doct."<html".parse_attribs($attribs).">".$contents."</html>";
+}
+
+function page_ext_script($src, $attribs = array())
+{
+    add_attrib($attribs, "src", $src);
+    add_attrib($attribs, "type", "text/javascript");
+
+    return "<script".parse_attribs($attribs)."></script>";
+}
+
+function page_ext_stylesheet($src, $is_print = false, $attribs = array())
+{
+    add_attrib($attribs, "src", $src);
+    add_attrib($attribs, "type", "text/css");
+    add_attrib($attribs, "rel", "stylesheet");
+    if ($is_print) add_attrib($attribs, "media", "print");
+
+    return "<link".parse_attribs($attribs)." />";
+}
+
+function page_int_styles($styles)
+{
+    return "<style>".$styles."</style>"; 
+}
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    SharkblockX classes.
+    SharktasticA 2021
+*/
 
 /**
  * Base class for other block types that are enumerated in SbXBlockTypes.
