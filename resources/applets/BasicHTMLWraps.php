@@ -43,12 +43,14 @@ function code($str)
 /**
  * Outputs markup for a division element.
  * @param string $contents  String to go inside this element
+ * @param bool $no_snippet  Flags if div should be wrapped in a data-nosnippet span
  * @param string $attribs   Custom HTML attribute options array
  * @return string
  */
-function div($contents, $attribs = array())
+function div($contents, $no_snippet = false, $attribs = array())
 {
-    return "<div".parse_attribs($attribs).">".$contents."</div>";
+    if ($nosnippet) return "<span data-nosnippet><div".parse_attribs($attribs).">".$contents."</div></span>";
+    else return "<div".parse_attribs($attribs).">".$contents."</div>";
 }
 
 /**
