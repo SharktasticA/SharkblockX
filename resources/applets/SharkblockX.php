@@ -362,6 +362,12 @@ function document($contents, $doctype = DocType::HTML5, $attribs = array())
     return $doct."<html".parse_attribs($attribs).">".$contents."</html>";
 }
 
+/**
+ * Declares an external (to HTML/PHP page) JavaScript embed
+ * @param string $src       JS filepath or URI
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
 function page_ext_script($src, $attribs = array())
 {
     add_attrib($attribs, "src", $src);
@@ -370,6 +376,13 @@ function page_ext_script($src, $attribs = array())
     return "<script".parse_attribs($attribs)."></script>";
 }
 
+/**
+ * Declares an external (to HTML/PHP page) CSS embed
+ * @param string $src       CSS filepath or URI
+ * @param bool $is_print    Flags if CSS should be a print stylesheet
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
 function page_ext_stylesheet($src, $is_print = false, $attribs = array())
 {
     add_attrib($attribs, "src", $src);
@@ -380,9 +393,28 @@ function page_ext_stylesheet($src, $is_print = false, $attribs = array())
     return "<link".parse_attribs($attribs)." />";
 }
 
-function page_int_styles($styles)
+/**
+ * Declares an internal stylesheet embed
+ * @param string $contents  String to go inside this element
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_int_script($contents, $attribs = array())
 {
-    return "<style>".$styles."</style>"; 
+    add_attrib($attribs, "type", "text/javascript");
+
+    return "<script".parse_attribs($attribs).">".$contents."</script>";
+}
+
+/**
+ * Declares an internal JavaScript embed
+ * @param string $contents  String to go inside this element
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_int_styles($contents, $attribs = array())
+{
+    return "<style".parse_attribs($attribs).">".$contents."</style>"; 
 }
 
 /*------------------------------------------------------------------------------------------------*/
