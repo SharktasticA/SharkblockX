@@ -195,7 +195,7 @@ function truncate_str($str, $count = 1)
 /*------------------------------------------------------------------------------------------------*/
 
 /*
-    SharkblockX simple HTML wraps.
+    SharkblockX generic HTML wraps.
     SharktasticA 2021-2022
 */
 
@@ -347,13 +347,28 @@ function sup($str)
 */
 
 /**
+ * Declares the base URL for all relative URLs in a given page to use.
+ * @param string $href      URL
+ * @param string $target    Link targets
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_base($href, $target = "_blank", $attribs = array())
+{
+    add_attrib($attribs, "href", $href);
+    add_attrib($attribs, "target", $target);
+
+    return "<base".parse_attribs($attribs)." />";
+}
+
+/**
  * Declares the opening document tags (DOCTYPE and html tags).
  * @param string $contents  String to go inside this element
  * @param DocType $doctype  Doctype version to use
  * @param array $attribs    Custom HTML attribute options array
  * @return string
  */
-function document($contents, $doctype = DocType::HTML5, $attribs = array())
+function page_document($contents, $doctype = DocType::HTML5, $attribs = array())
 {
     $doct = "<!DOCTYPE HTML>";
     if ($doctype == DocType::HTML401Strict) $doct = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
@@ -391,6 +406,33 @@ function page_ext_stylesheet($src, $is_print = false, $attribs = array())
     if ($is_print) add_attrib($attribs, "media", "print");
 
     return "<link".parse_attribs($attribs)." />";
+}
+
+/**
+ * Declares a favicon for a given page.
+ * @param string $href      Filepath or URI to favicon
+ * @param string $type      Type of favicon
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_favicon($href, $type, $attribs = array())
+{
+    add_attrib($attribs, "href", $href);
+    add_attrib($attribs, "type", $type);
+    add_attrib($attribs, "rel", "icon");
+
+    return "<link".parse_attribs($attribs)." />";
+}
+
+/**
+ * Declares the head document tags.
+ * @param string $contents  String to go inside this element
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_head($contents, $attribs = array())
+{
+    return $doct."<head".parse_attribs($attribs).">".$contents."</head>";
 }
 
 /**
