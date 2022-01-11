@@ -416,6 +416,71 @@ function page_int_styles($contents, $attribs = array())
 {
     return "<style".parse_attribs($attribs).">".$contents."</style>"; 
 }
+/**
+ * Declares a meta tag. Some key meta tag names may also trigger additional
+ * OpenGraph and/or Twitter card tags to be generated.
+ * @param string $name      Name of the meta tag
+ * @param string $cont      Content for the meta tag
+ * @param string $base_url  Base URL used for potential meta tags that require absolute URL
+ */
+function page_meta($name, $cont, $base_url = "/")
+{
+    $content = "";
+
+    if ($name == "image")
+    {
+        $content .= "<meta property=\"og:image\" content=\"".$base_url.$cont."\" />";
+        $content .= "<meta property=\"twitter:image\" content=\"".$base_url.$cont."\" />";
+        $content .= "<meta property=\"twitter:card\" content=\"summary_large_image\" />";
+    }
+    else if ($name == "url")
+    {
+        $content .= "<meta property=\"og:url\" content=\"$cont\" />";
+    }
+    else if ($name == "type")
+    {
+        $content .= "<meta property=\"og:type\" content=\"$cont\" />";
+    }
+    else if ($name == "card")
+    {
+        $content .= "<meta property=\"twitter:card\" content=\"".$cont."\" />";
+    }
+    else if ($name == "site")
+    {
+        $content .= "<meta property=\"twitter:site\" content=\"".$cont."\" />";
+    }
+    else if ($name == "canonical")
+    {
+        $content .= "<link rel=\"canonical\" href=\"".$cont."\" />";
+    }
+    else if ($name == "locale")
+    {
+        $content .= "<meta property=\"og:locale\" content=\"".$cont."\" />";
+    }
+    else if ($name == "site_name")
+    {
+        $content .= "<meta property=\"og:site_name\" content=\"".$cont."\" />";
+    }
+    else
+    {
+        $content = "<meta name=\"".$name."\" content=\"".$cont."\" />";
+
+        if ($name == "title")
+        {
+            $content .= "<meta itemprop=\"name\" content=\"".$cont."\" />";
+            $content .= "<meta property=\"og:title\" content=\"".$cont."\" />";
+            $content .= "<meta property=\"twitter:title\" content=\"".$cont."\" />";
+        }
+        else if ($name == "description")
+        {
+            $content .= "<meta itemprop=\"description\" content=\"".$cont."\" />";
+            $content .= "<meta property=\"og:description\" content=\"".$cont."\" />";
+            $content .= "<meta property=\"twitter:description\" content=\"".$cont."\" />";
+        }
+    }
+
+    return $content;
+}
 
 /*------------------------------------------------------------------------------------------------*/
 
