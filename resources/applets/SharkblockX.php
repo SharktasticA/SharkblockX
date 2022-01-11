@@ -808,7 +808,7 @@ class SbXProcessor
     /**
      * SbXProcessor constructor.
      * @param string $title             Webpage's title
-     * @param string $lang              Webpage's language (ie, en-GB)
+     * @param string $lang              Webpage's language (ISO format like en-gb, de, etc.)
      * @param string $charset           Webpage's character set
      * @param string $basel_url         Potential webpage base URL for relative hyperlinks.
      * @param string $author            Webpage/site author to be inserted into meta tags.
@@ -822,7 +822,7 @@ class SbXProcessor
         $this->charset = $charset;
         $this->base_url = $base_url;
         $this->nosnippet = $nosnippet;
-        $this->scroll_btn = $scroll_btn;
+        $this->return_scroll_btn = $return_scroll_btn;
 
         $this->metas[] = page_meta("title", $title);
 
