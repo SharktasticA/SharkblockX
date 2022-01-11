@@ -358,7 +358,7 @@ function page_base($href, $target = "_blank", $attribs = array())
     add_attrib($attribs, "href", $href);
     add_attrib($attribs, "target", $target);
 
-    return "<base".parse_attribs($attribs)."/>";
+    return "<base".parse_attribs($attribs)." />";
 }
 
 /**
@@ -405,7 +405,7 @@ function page_ext_stylesheet($src, $is_print = false, $attribs = array())
     add_attrib($attribs, "rel", "stylesheet");
     if ($is_print) add_attrib($attribs, "media", "print");
 
-    return "<link".parse_attribs($attribs)."/>";
+    return "<link".parse_attribs($attribs)." />";
 }
 
 /**
@@ -421,7 +421,7 @@ function page_favicon($href, $type, $attribs = array())
     add_attrib($attribs, "type", $type);
     add_attrib($attribs, "rel", "icon");
 
-    return "<link".parse_attribs($attribs)."/>";
+    return "<link".parse_attribs($attribs)." />";
 }
 
 /**
@@ -508,52 +508,61 @@ function page_open_graph($type, $title, $site_name, $desc, $locale, $img, $url)
         $attribs = array();
         add_attrib($attribs, "property", "og:type");
         add_attrib($attribs, "content", $type);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($title != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:title");
         add_attrib($attribs, "content", $title);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($site_name != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:site_name");
         add_attrib($attribs, "content", $site_name);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($desc != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:description");
         add_attrib($attribs, "content", $desc);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($locale != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:locale");
         add_attrib($attribs, "content", $locale);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($img != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:image");
         add_attrib($attribs, "content", $img);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($url != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "og:url");
         add_attrib($attribs, "content", $url);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
 
     return $content;
+}
+
+/**
+ * Declares a standard page title.
+ * @param string $title Webpage's title
+ */
+function page_title($title)
+{
+    return "<title>".$title."</title>";
 }
 
 /**
@@ -574,42 +583,42 @@ function page_twitter_card($card, $title, $desc, $image, $creator, $site)
         $attribs = array();
         add_attrib($attribs, "property", "twitter:card");
         add_attrib($attribs, "content", $card);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($title != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "twitter:title");
         add_attrib($attribs, "content", $title);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($desc != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "twitter:description");
         add_attrib($attribs, "content", $desc);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($image != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "twitter:image");
         add_attrib($attribs, "content", $image);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($creator != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "twitter:creator");
         add_attrib($attribs, "content", $creator);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
     if ($site != "")
     {
         $attribs = array();
         add_attrib($attribs, "property", "twitter:site");
         add_attrib($attribs, "content", $site);
-        $content .= "<meta".parse_attribs($attribs)."/>";
+        $content .= "<meta".parse_attribs($attribs)." />";
     }
 
     return $content;
@@ -781,7 +790,6 @@ class SbXProcessor
     private $title;
     private $lang;
     private $charset;
-    private $author;
     private $base_url;
     private $favicon;
 
@@ -807,19 +815,16 @@ class SbXProcessor
      * @param bool $nosnippet           Flags if you want to apply nosnippet tags to the contents of this page
      * @param bool $return_scroll_btn   Flags if you want a button to appear for quick scrolling to top of page
      */
-    public function __construct($title, $lang, $charset, $base_url = "", $author = "", $nosnippet = false, $return_scroll_btn = true)
+    public function __construct($title, $lang, $charset, $base_url = "", $nosnippet = false, $return_scroll_btn = true)
     {
         $this->title = $title;
         $this->lang = $lang;
         $this->charset = $charset;
         $this->base_url = $base_url;
-        $this->author = $author;
         $this->nosnippet = $nosnippet;
         $this->scroll_btn = $scroll_btn;
 
         $this->metas[] = page_meta("title", $title);
-
-        if ($this->author != "") $this->metas[] = page_meta("author", $author);
 
         $this->stylesheets = array();
         $this->print_stylesheets = array();
