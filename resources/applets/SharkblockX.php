@@ -362,6 +362,17 @@ function page_base($href, $target = "_blank", $attribs = array())
 }
 
 /**
+ * Declares the body document tags.
+ * @param string $contents  String to go inside this element
+ * @param array $attribs    Custom HTML attribute options array
+ * @return string
+ */
+function page_body($contents, $attribs = array())
+{
+    return "<body".parse_attribs($attribs).">".$contents."</body>";
+}
+
+/**
  * Declares the opening document tags (DOCTYPE and html tags).
  * @param string $contents  String to go inside this element
  * @param DocType $doctype  Doctype version to use
@@ -432,7 +443,7 @@ function page_favicon($href, $type, $attribs = array())
  */
 function page_head($contents, $attribs = array())
 {
-    return $doct."<head".parse_attribs($attribs).">".$contents."</head>";
+    return "<head".parse_attribs($attribs).">".$contents."</head>";
 }
 
 /**
@@ -840,7 +851,57 @@ class SbXProcessor
      */
     private function build()
     {
+        /* head markup processing ---------------------------------------------- */
+        
+        $head_markup = "";
 
+        {
+            $head_markup.= page_title($this->title, false);
+            if ($this->base_url != "") $head_markup.= page_base($this->base_url);
+            if ($this->metas)
+                if (count($this->metas) > 0)
+                    foreach ($this->metas as $meta)
+                        $head_markup.= $meta;
+    
+            if ($this->favicon)
+                $head_markup.= page_favicon(array_keys($this->favicon)[0], $this->favicon[array_keys($this->favicon)[0]]);
+    
+            if ($this->stylesheets)
+                if (count($this->stylesheets) > 0)
+                    foreach ($this->stylesheets as $stylesheet)
+                        $head_markup.= page_ext_stylesheet($stylesheet);
+    
+            if ($this->print_stylesheets)
+                if (count($this->print_stylesheets) > 0)
+                    foreach ($this->print_stylesheets as $stylesheet)
+                        $head_markup.= page_print_stylesheet($stylesheet);
+    
+            if ($this->inline_styles != "")
+                $head_markup.= page_int_styles($this->inline_styles);
+    
+            if ($this->int_scripts)
+                if (count($this->int_scripts) > 0)
+                    foreach ($this->int_scripts as $script)
+                        $head_markup.= page_int_script($script);
+    
+            if ($this->ext_scripts)
+                if (count($this->ext_scripts) > 0)
+                    foreach ($this->ext_scripts as $script)
+                        $head_markup.= page_ext_script($script);
+        }
+
+        /* body markup processing ---------------------------------------------- */
+
+        $body_markup = "";
+
+        {
+            
+        }
+        
+        // This will be the final return code for this method, the other one is just for debugging purposes during dev
+        // return page_document(page_head($head_markup).page_body($body_markup), DocType::HTML5, array("lang" => $this->lang));
+
+        return str_replace(array(">", "</"), array(">\n", "\n</"), page_document(page_head($head_markup).page_body($body_markup), DocType::HTML5, array("lang" => $this->lang)));
     }
 
     /**
