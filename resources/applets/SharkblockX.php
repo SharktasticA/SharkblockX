@@ -631,3 +631,133 @@ class SbXBlock
         else $this->content.= $markup;
     }
 }
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    SharkblockX processor class.
+    SharktasticA 2021-2022
+*/
+
+/**
+ * The main driver for a SharkblockX page. Contains all the blocks and additional
+ * meta data for the webpage to be constructed.
+ */
+class SbXProcessor
+{
+    private $title;
+    private $lang;
+    private $charset;
+    private $author;
+    private $base_url;
+    private $favicon;
+
+    private $nosnippet;
+    private $return_scroll_btn;
+
+    private $stylesheets;
+    private $print_stylesheets;
+    private $inline_styles;
+    private $int_scripts;
+    private $ext_scripts;
+    private $metas;
+    private $nav;
+    private $blocks;
+
+    /**
+     * SbXProcessor constructor.
+     * @param string $title             Webpage's title
+     * @param string $lang              Webpage's language (ie, en-GB)
+     * @param string $charset           Webpage's character set
+     * @param string $basel_url         Potential webpage base URL for relative hyperlinks.
+     * @param string $author            Webpage/site author to be inserted into meta tags.
+     * @param bool $nosnippet           Flags if you want to apply nosnippet tags to the contents of this page
+     * @param bool $return_scroll_btn   Flags if you want a button to appear for quick scrolling to top of page
+     */
+    public function __construct($title, $lang, $charset, $base_url = "", $author = "", $nosnippet = false, $return_scroll_btn = true)
+    {
+        $this->title = $title;
+        $this->lang = $lang;
+        $this->charset = $charset;
+        $this->base_url = $base_url;
+        $this->author = $author;
+        $this->nosnippet = $nosnippet;
+        $this->scroll_btn = $scroll_btn;
+
+        $this->metas[] = page_meta("title", $title);
+
+        if ($this->author != "") $this->metas[] = page_meta("author", $author);
+
+        $this->stylesheets = array();
+        $this->print_stylesheets = array();
+        $this->inline_styles = "";
+        $this->int_scripts = array();
+        $this->ext_scripts = array();
+        $this->blocks = array();
+    }
+
+    /**
+     * Assemblies all blocks, meta tags, scripts and stylesheets to make one big string
+     * of all the webpage's markup.
+     */
+    private function build()
+    {
+
+    }
+
+    /**
+     * Echos the webpage's full markup so it can be displayed.
+     */
+    public function draw()
+    {
+        echo $this->build();
+    }
+
+    /**
+     * Adds a favicon for this page.
+     * @param string $uri   URI for this favicon
+     * @param string $type  Type of favicon image (default image/png)
+     */
+    public function add_favicon($uri, $type = "image/png")
+    {
+        $this->favicon[$uri] = $type;
+    }
+
+    /**
+     * Specifies a CSS stylesheet to use on this page.
+     * @param string $uri       Stylsheet's URI
+     * @param boll $is_print    Flags if this stylesheet is a print stylesheet
+     */
+    public function add_stylesheet($uri, $is_print = false)
+    {
+        if ($is_print) $this->print_stylesheets[] = $uri;
+        else $this->stylesheets[] = $uri;
+    }
+    
+    /**
+     * Adds inline CSS to this page.
+     * @param string $style Raw CSS to add to this page
+     */
+    public function add_inline_style($style)
+    {
+        $this->inline_styles .= $style;
+    }
+
+    /**
+     * Specifies a JavaScript script to use on this page.
+     * @param string $uri       Stylsheet's URI
+     */
+    public function add_ext_script($uri)
+    {
+        $this->ext_scripts[] = $uri;
+    }
+    
+    /**
+     * Adds inline JavaScript code to this page.
+     * @param string $style Raw JavaScript to add to this page
+     */
+    public function add_int_script($content)
+    {
+        $this->int_scripts[] = $content;
+    }
+}
