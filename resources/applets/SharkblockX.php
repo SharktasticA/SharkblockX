@@ -2,7 +2,7 @@
 
 /*
     SharkblockX Globals
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
@@ -31,7 +31,7 @@ $NO_IMG_PLACEHOLDER = "resources/images/misc/null.png";
 
 /*
     Enumerations to use throughout SharkblockX.
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
@@ -101,7 +101,7 @@ abstract class SbXAlign
 
 /*
     Helper function functions for use within SharkblockX and in general.
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
@@ -196,7 +196,7 @@ function truncate_str($str, $count = 1)
 
 /*
     SharkblockX simple HTML wraps.
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
@@ -343,7 +343,7 @@ function sup($str)
 
 /*
     SharkblockX complex HTML wraps.
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
@@ -421,7 +421,7 @@ function page_int_styles($contents, $attribs = array())
 
 /*
     SharkblockX classes.
-    SharktasticA 2021
+    SharktasticA 2021-2022
 */
 
 /**
