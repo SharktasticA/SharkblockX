@@ -358,7 +358,7 @@ function page_base($href, $target = "_blank", $attribs = array())
     add_attrib($attribs, "href", $href);
     add_attrib($attribs, "target", $target);
 
-    return "<base".parse_attribs($attribs)." />";
+    return "<base".parse_attribs($attribs)."/>";
 }
 
 /**
@@ -405,7 +405,7 @@ function page_ext_stylesheet($src, $is_print = false, $attribs = array())
     add_attrib($attribs, "rel", "stylesheet");
     if ($is_print) add_attrib($attribs, "media", "print");
 
-    return "<link".parse_attribs($attribs)." />";
+    return "<link".parse_attribs($attribs)."/>";
 }
 
 /**
@@ -421,7 +421,7 @@ function page_favicon($href, $type, $attribs = array())
     add_attrib($attribs, "type", $type);
     add_attrib($attribs, "rel", "icon");
 
-    return "<link".parse_attribs($attribs)." />";
+    return "<link".parse_attribs($attribs)."/>";
 }
 
 /**
@@ -459,8 +459,7 @@ function page_int_styles($contents, $attribs = array())
     return "<style".parse_attribs($attribs).">".$contents."</style>"; 
 }
 /**
- * Declares a meta tag. Some key meta tag names may also trigger additional
- * OpenGraph and/or Twitter card tags to be generated.
+ * Declares a meta tag.
  * @param string $name      Name of the meta tag
  * @param string $cont      Content for the meta tag
  * @param string $base_url  Base URL used for potential meta tags that require absolute URL
@@ -469,39 +468,9 @@ function page_meta($name, $cont, $base_url = "/")
 {
     $content = "";
 
-    if ($name == "image")
-    {
-        $content .= "<meta property=\"og:image\" content=\"".$base_url.$cont."\" />";
-        $content .= "<meta property=\"twitter:image\" content=\"".$base_url.$cont."\" />";
-        $content .= "<meta property=\"twitter:card\" content=\"summary_large_image\" />";
-    }
-    else if ($name == "url")
-    {
-        $content .= "<meta property=\"og:url\" content=\"$cont\" />";
-    }
-    else if ($name == "type")
-    {
-        $content .= "<meta property=\"og:type\" content=\"$cont\" />";
-    }
-    else if ($name == "card")
-    {
-        $content .= "<meta property=\"twitter:card\" content=\"".$cont."\" />";
-    }
-    else if ($name == "site")
-    {
-        $content .= "<meta property=\"twitter:site\" content=\"".$cont."\" />";
-    }
-    else if ($name == "canonical")
+    if ($name == "canonical")
     {
         $content .= "<link rel=\"canonical\" href=\"".$cont."\" />";
-    }
-    else if ($name == "locale")
-    {
-        $content .= "<meta property=\"og:locale\" content=\"".$cont."\" />";
-    }
-    else if ($name == "site_name")
-    {
-        $content .= "<meta property=\"og:site_name\" content=\"".$cont."\" />";
     }
     else
     {
@@ -510,15 +479,137 @@ function page_meta($name, $cont, $base_url = "/")
         if ($name == "title")
         {
             $content .= "<meta itemprop=\"name\" content=\"".$cont."\" />";
-            $content .= "<meta property=\"og:title\" content=\"".$cont."\" />";
-            $content .= "<meta property=\"twitter:title\" content=\"".$cont."\" />";
         }
         else if ($name == "description")
         {
             $content .= "<meta itemprop=\"description\" content=\"".$cont."\" />";
-            $content .= "<meta property=\"og:description\" content=\"".$cont."\" />";
-            $content .= "<meta property=\"twitter:description\" content=\"".$cont."\" />";
         }
+    }
+
+    return $content;
+}
+
+/**
+ * Declares several meta tags for Open Graph functionality.
+ * @param string $type          Adds og:type meta property
+ * @param string $title         Adds og:title meta property
+ * @param string $site_name     Adds og:site_name meta property
+ * @param string $desc          Adds og:description meta property
+ * @param string $locale        Adds og:locale creator property
+ * @param string $img           Adds og:image meta property
+ * @param string $url           Adds og:url meta property
+ */
+function page_open_graph($type, $title, $site_name, $desc, $locale, $img, $url)
+{
+    $content = "";
+
+    if ($type != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:type");
+        add_attrib($attribs, "content", $type);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($title != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:title");
+        add_attrib($attribs, "content", $title);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($site_name != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:site_name");
+        add_attrib($attribs, "content", $site_name);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($desc != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:description");
+        add_attrib($attribs, "content", $desc);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($locale != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:locale");
+        add_attrib($attribs, "content", $locale);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($img != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:image");
+        add_attrib($attribs, "content", $img);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($url != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "og:url");
+        add_attrib($attribs, "content", $url);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+
+    return $content;
+}
+
+/**
+ * Declares several meta tags for a Twitter Card.
+ * @param string $card      Adds twitter:card meta property
+ * @param string $title     Adds twitter:title meta property
+ * @param string $desc      Adds twitter:description meta property
+ * @param string $image     Adds twitter:image meta property
+ * @param string $creator   Adds twitter:site creator property
+ * @param string $site      Adds twitter:site meta property
+ */
+function page_twitter_card($card, $title, $desc, $image, $creator, $site)
+{
+    $content = "";
+
+    if ($card != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:card");
+        add_attrib($attribs, "content", $card);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($title != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:title");
+        add_attrib($attribs, "content", $title);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($desc != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:description");
+        add_attrib($attribs, "content", $desc);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($image != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:image");
+        add_attrib($attribs, "content", $image);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($creator != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:creator");
+        add_attrib($attribs, "content", $creator);
+        $content .= "<meta".parse_attribs($attribs)."/>";
+    }
+    if ($site != "")
+    {
+        $attribs = array();
+        add_attrib($attribs, "property", "twitter:site");
+        add_attrib($attribs, "content", $site);
+        $content .= "<meta".parse_attribs($attribs)."/>";
     }
 
     return $content;
@@ -764,6 +855,15 @@ class SbXProcessor
     {
         $this->favicon[$uri] = $type;
     }
+    
+    /**
+     * Adds inline CSS to this page.
+     * @param string $style Raw CSS to add to this page
+     */
+    public function add_inline_style($style)
+    {
+        $this->inline_styles .= $style;
+    }
 
     /**
      * Specifies a CSS stylesheet to use on this page.
@@ -774,15 +874,6 @@ class SbXProcessor
     {
         if ($is_print) $this->print_stylesheets[] = $uri;
         else $this->stylesheets[] = $uri;
-    }
-    
-    /**
-     * Adds inline CSS to this page.
-     * @param string $style Raw CSS to add to this page
-     */
-    public function add_inline_style($style)
-    {
-        $this->inline_styles .= $style;
     }
 
     /**
@@ -801,5 +892,52 @@ class SbXProcessor
     public function add_int_script($content)
     {
         $this->int_scripts[] = $content;
+    }
+
+    /**
+     * Specifies a meta tag for this page.
+     * @param string $name      Meta's name
+     * @param string $content   Meta's content
+     */
+    public function add_meta($name, $content)
+    {
+        if ($content == "") return;
+        if ($name == "robots" && $content == "nofollow")
+        {
+            $pos = array_search('<meta name="robots" content="index, follow" />', $this->metas);
+            unset($this->metas[$pos]);
+            $pos = array_search('<meta name="revisit-after" content="7 days" />', $this->metas);
+            unset($this->metas[$pos]);
+        }
+        $this->metas[] = page_meta($name, $content, false);
+    }
+
+    /**
+     * Sepcifies various Twitter Card protocol meta tags for this page.
+     * @param string $card      Sets twitter:card meta property
+     * @param string $title     Sets twitter:title meta property
+     * @param string $desc      Sets twitter:description meta property
+     * @param string $image     Sets twitter:image meta property
+     * @param string $creator   Sets twitter:site creator property
+     * @param string $site      Sets twitter:site meta property
+     */
+    public function add_twitter_card($card, $title, $desc, $image, $creator, $site)
+    {
+        $this->metas[] = page_twitter_card($card, $title, $desc, $image, $creator, $site);
+    }
+
+    /**
+     * Specifies various Open Graph protocol meta tags for this page.
+     * @param string $type          Sets og:type meta property
+     * @param string $title         Sets og:title meta property
+     * @param string $site_name     Sets og:site_name meta property
+     * @param string $desc          Sets og:description meta property
+     * @param string $locale        Sets og:locale creator property
+     * @param string $img           Sets og:image meta property
+     * @param string $url           Sets og:url meta property
+     */
+    function add_open_graph($type, $title, $site_name, $desc, $locale, $img, $url)
+    {
+        $this->metas[] = page_open_graph($type, $title, $site_name, $desc, $locale, $img, $url);
     }
 }
