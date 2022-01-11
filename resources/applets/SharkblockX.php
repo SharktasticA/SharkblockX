@@ -566,3 +566,54 @@ class SbXBlock
         else $this->content.= $markup;
     }
 }
+
+/*------------------------------------------------------------------------------------------------*/
+
+/*
+    SharkblockX processor class.
+    SharktasticA 2021-2022
+*/
+
+class SbXProcessor
+{
+    private $author;
+    private $title;
+    private $lang;
+    private $base_url;
+    private $favicon;
+
+    private $nosnippet;
+    private $return_scroll_btn;
+
+    private $stylesheets;
+    private $print_stylesheets;
+    private $inline_styles;
+    private $int_scripts;
+    private $ext_scripts;
+    private $metas;
+    private $nav;
+    private $blocks;
+
+
+    public function __construct($title, $lang, $charset, $author = "", $nosnippet = false, $return_scroll_btn = true)
+    {
+        $this->title = $title;
+        $this->lang = $lang;
+        $this->charset = $charset;
+        $this->author = $author;
+        $this->nosnippet = $nosnippet;
+        $this->scroll_btn = $scroll_btn;
+
+        $this->metas[] = page_meta("title", $title);
+
+        if ($this->author != "")
+            $this->metas[] = page_meta("author", $author);
+
+        $this->stylesheets = array();
+        $this->print_stylesheets = array();
+        $this->inline_styles = "";
+        $this->int_scripts = array();
+        $this->ext_scripts = array();
+        $this->blocks = array();
+    }
+}
