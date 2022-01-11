@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  test:
+    build:
+      context: .
+      dockerfile: test.Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - '.:/app'
+      - type: bind
+        source: ./
+        target: /var/www/html
